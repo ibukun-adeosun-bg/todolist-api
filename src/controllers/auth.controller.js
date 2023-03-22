@@ -1,5 +1,6 @@
 const bcrypt = require("bcryptjs")
 const User = require("../models/User")
+const { createError } = require("../utils/error")
 
 //REGISTER A PAGE
 const register = async (req, res, next) => {
@@ -14,16 +15,15 @@ const register = async (req, res, next) => {
         }
         const alreadyExistsUser = await User.findOne({ where: {email: req.body.email}})
         if (alreadyExistsUser) {
-            return next(createerror(409, "This User is already Registered"))
+            return next(createError(409, "This User is already Registered"))
         }
         const newUser = new User(info)
-        await newUser.save(function(err) {
-            if (err) {
-                res.status(500).json(err)
-            } else {
+        await newUser.save()
+            .then(() => {
                 res.status(200).json("User has been Registered")
-            }
-        })
+            }).catch (err => {
+                res.status(500).json(err)
+            })
     } catch (err) {
         next(err)
     }
@@ -32,7 +32,13 @@ const register = async (req, res, next) => {
 //LOGIN A PAGE
 const login = async (req, res, next) => {
     try {
+        const user = await User.findOne({ where: {email: req.body.email }})
+        if (!user) return next(createError(404, "User not found!!!"))
 
+        const isPasswordCorrect = bcrypt.compareSync(req.body.password, user.password)
+        if (!isPasswordCorrect) return next(createError(403, "Username and Password don't match"))
+
+        res.status(200).json(user)
     } catch (err) {
         next(err)
     }
