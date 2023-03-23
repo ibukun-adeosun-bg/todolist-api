@@ -38,18 +38,17 @@ const login = async (req, res, next) => {
 
         const isPasswordCorrect = bcrypt.compareSync(req.body.password, user.password)
         if (!isPasswordCorrect) return next(createError(403, "Username and Password don't match"))
-
-        const accessToken = jwt.sign(
-            {
+        
+        const accessToken = jwt.sign({
                 id: user.id,
                 isAdmin: user.isAdmin
             },
             process.env.JWT_SEC,
-            { expiresIn: "30d" }
+            { expiresIn: "30d" },
         )
-
+        
         res.status(200).json({
-            message: "You are now logged in",
+            message: "You are logged In",
             id: user.id,
             isAdmin: user.isAdmin,
             token: accessToken

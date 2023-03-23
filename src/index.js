@@ -1,6 +1,6 @@
 const express = require('express')
 const morgan = require("morgan")
-const helmet = require("morgan")
+const helmet = require("helmet")
 const cors = require("cors")
 const db = require('./config/dbConfig')
 const authRoutes = require("./routes/auth.routes")
