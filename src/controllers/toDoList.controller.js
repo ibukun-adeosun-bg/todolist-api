@@ -4,8 +4,10 @@ const List = require("../models/ToDoList")
 const createList = async (req, res, next) => {
     try {
         const info = {
-            list_id: req.body.list_id,
-            list_description: req.body.list_description
+            list_description: req.body.list_description,
+            tags: req.body.tags ? req.body.tags : [],
+            priority: req.body.priority ? req.body.priority : "not urgent",
+            status: req.body.status ? req.body.status : "pending"
         }
         const newList = new List(info)
         await newList.save()
@@ -23,7 +25,6 @@ const createList = async (req, res, next) => {
 const getList = async (req, res, next) => {
     try {
         const id = req.params.listId
-        console.log(id);
         const list = await List.findOne({ where: { id: id }})
         res.status(200).json(list)
     } catch (err) {

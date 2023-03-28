@@ -18,6 +18,12 @@ const Task = db.define("Task", {
         type: Sequelize.DATEONLY,
         allowNull: false
     },
+    priority: {
+        type: Sequelize.STRING,
+        validate: {
+            isIn: [["urgent", "not urgent"]]
+        }
+    },
     status: {
         type: Sequelize.STRING,
         validate: {

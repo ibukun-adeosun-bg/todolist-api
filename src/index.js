@@ -6,6 +6,7 @@ const db = require('./config/dbConfig')
 const authRoutes = require("./routes/auth.routes")
 const userRoutes = require("./routes/user.routes")
 const toDoListRoutes = require('./routes/toDoList.routes')
+const taskRoutes = require('./routes/task.routes')
 
 db.authenticate()
     .then(() => {
@@ -29,6 +30,7 @@ app.use(morgan("dev"))
 app.use("/api/v1/auth", authRoutes)
 app.use("/api/v1/users", userRoutes)
 app.use("/api/v1/users", toDoListRoutes)
+app.use("/api/v1/users", taskRoutes)
 app.use((err, req, res, next) => {
     const errorStatus = err.status || 500
     const errorMessage = err.message || "Something went wrong with the Server"
