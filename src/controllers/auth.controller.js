@@ -1,6 +1,6 @@
 const bcrypt = require("bcryptjs")
 const jwt = require("jsonwebtoken")
-const User = require("../models/User")
+const db = require("../config/dbConfig")
 const { createError } = require("../utils/error")
 
 //REGISTER A PAGE
@@ -14,11 +14,11 @@ const register = async (req, res, next) => {
             password: hashedPassword,
             isAdmin: req.body.isAdmin ? req.body.isAdmin : false
         }
-        const alreadyExistsUser = await User.findOne({ where: {email: req.body.email}})
+        const alreadyExistsUser = await db.user.findOne({ where: {email: req.body.email}})
         if (alreadyExistsUser) {
             return next(createError(409, "This User is already Registered"))
         }
-        const newUser = new User(info)
+        const newUser = new db.user(info)
         await newUser.save()
             .then(() => {
                 res.status(200).json("User has been Registered")
@@ -33,7 +33,7 @@ const register = async (req, res, next) => {
 //LOGIN A PAGE
 const login = async (req, res, next) => {
     try {
-        const user = await User.findOne({ where: {email: req.body.email }})
+        const user = await db.user.findOne({ where: {email: req.body.email }})
         if (!user) return next(createError(404, "User not found!!!"))
 
         const isPasswordCorrect = bcrypt.compareSync(req.body.password, user.password)

@@ -1,11 +1,11 @@
-const User = require("../models/User")
 const jwt  = require("jsonwebtoken")
+const db = require("../config/dbConfig")
 
 //GET USER INFORMATION
 const getOneUser = async (req, res, next) => {
     try {
         const id = req.params.userId
-        const user = await User.findOne({ where: { id: id }})
+        const user = await db.user.findOne({ where: { id: id }})
         res.status(200).json(user)
     } catch (err) {
         next(err)
@@ -15,7 +15,7 @@ const getOneUser = async (req, res, next) => {
 //GET ALL USERS
 const getAllUsers = async (req, res, next) => {
     try {
-        const users = await User.findAll({})
+        const users = await db.user.findAll({})
         res.status(200).json(users)
     } catch (err) {
         next(err)
@@ -26,7 +26,7 @@ const getAllUsers = async (req, res, next) => {
 const updateUser = async (req, res, next) => {
     try {
         const id = req.params.userId
-        const userUpdate = await User.update(req.body, { where: { id: id }})
+        const userUpdate = await db.user.update(req.body, { where: { id: id }})
         res.status(200).json("User Information has been Updated")
     } catch (err) {
         next(err)
@@ -37,7 +37,7 @@ const updateUser = async (req, res, next) => {
 const deleteUser = async (req, res, next) => {
     try {
         const id = req.params.userId
-        await User.destroy({ where: { id: id }})
+        await db.user.destroy({ where: { id: id }})
         res.status(200).json("User Information has been Deleted")
     } catch (err) {
         next(err)

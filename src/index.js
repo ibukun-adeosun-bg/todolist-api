@@ -8,14 +8,14 @@ const userRoutes = require("./routes/user.routes")
 const toDoListRoutes = require('./routes/toDoList.routes')
 const taskRoutes = require('./routes/task.routes')
 
-db.authenticate()
+db.sequelize.authenticate()
     .then(() => {
         console.log("Database Connection Successful");
     }).catch (err => {
         console.log(err);
     })
 
-db.sync({ force: false })
+db.sequelize.sync({ force: false })
     .then(() => {
         console.log("Yes Resyncing to the database has been done");
     }).catch (err => {

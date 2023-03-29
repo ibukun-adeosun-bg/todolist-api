@@ -1,16 +1,16 @@
-const Task = require("../models/Task")
+const db = require("../config/dbConfig")
 
 //CREATE A TASK
 const createTask = async (req, res, next) => {
     try {
         const info = {
-            task_id: req.body.task_id,
             task_description: req.body.task_description,
             due_date: req.body.due_date,
             priority: req.body.priority ? req.body.priority : "not urgent",
-            status: req.body.status ? req.body.status : "pending"
+            status: req.body.status ? req.body.status : "pending",
+            listId: req.body.listId
         }
-        const newTask = new Task(info)
+        const newTask = new db.task(info)
         await newTask.save()
             .then(() => {
                 res.status(200).json("You have created a new Task on this list")
@@ -26,7 +26,7 @@ const createTask = async (req, res, next) => {
 const getTask = async (req, res, next) => {
     try {
         const id = req.params.taskId
-        const task = await Task.findOne({ where: { id: id }})
+        const task = await db.task.findOne({ where: { id: id }})
         res.status(200).json(task)
     } catch (err) {
         next(err)
@@ -36,7 +36,7 @@ const getTask = async (req, res, next) => {
 //GET ALL TASKS
 const getAllTasks = async (req, res, next) => {
     try {
-        const tasks = await Task.findAll({})
+        const tasks = await db.task.findAll({})
         res.status(200).json(tasks)
     } catch (err) {
         next(err)
@@ -47,7 +47,7 @@ const getAllTasks = async (req, res, next) => {
 const updateTask = async (req, res, next) => {
     try {
         const id = req.params.taskId
-        await Task.update(req.body, { where: { id: id }})
+        await db.task.update(req.body, { where: { id: id }})
             .then(() => {
                 res.status(200).json("Task has been Updated")
             }).catch (err => {
@@ -62,7 +62,7 @@ const updateTask = async (req, res, next) => {
 const deleteTask = async (req, res, next) => {
     try {
         const id = req.params.taskId
-        await Task.destroy({ where: { id: id }})
+        await db.task.destroy({ where: { id: id }})
             .then(() => {
                 res.status(200).json("Task has been Deleted")
             }).catch(err => {

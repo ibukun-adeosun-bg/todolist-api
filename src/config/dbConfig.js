@@ -1,5 +1,5 @@
 const Sequelize = require("sequelize")
-const dotenv = require('dotenv')
+const dotenv = require('dotenv');
 dotenv.config();
 
 const configDetails = {
@@ -16,7 +16,7 @@ const configDetails = {
     }
 }
 
-const db = new Sequelize(
+const sequelize = new Sequelize(
     configDetails.DATABASE,
     configDetails.USER,
     configDetails.PASSWORD, {
@@ -31,5 +31,19 @@ const db = new Sequelize(
     }
 );
 
+const db = {}
+db.sequelize = sequelize;
+db.Sequelize = Sequelize;
+
+const User = require("../models/User.js")(sequelize, Sequelize)
+const List = require("../models/ToDoList.js")(sequelize, Sequelize)
+const Task = require("../models/Task.js")(sequelize, Sequelize)
+
+List.belongsTo(User)
+Task.belongsTo(List)
+
+db.user = User
+db.list = List
+db.task = Task
 
 module.exports = db

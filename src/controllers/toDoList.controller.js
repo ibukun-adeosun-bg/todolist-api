@@ -1,4 +1,4 @@
-const List = require("../models/ToDoList")
+const db = require("../config/dbConfig")
 
 //CREATE A TO DO LIST
 const createList = async (req, res, next) => {
@@ -7,9 +7,10 @@ const createList = async (req, res, next) => {
             list_description: req.body.list_description,
             tags: req.body.tags ? req.body.tags : [],
             priority: req.body.priority ? req.body.priority : "not urgent",
-            status: req.body.status ? req.body.status : "pending"
+            status: req.body.status ? req.body.status : "pending",
+            userId: req.body.userId
         }
-        const newList = new List(info)
+        const newList = new db.list(info)
         await newList.save()
             .then(() => {
                 res.status(200).json("A New To Do List has been Created")
@@ -25,7 +26,7 @@ const createList = async (req, res, next) => {
 const getList = async (req, res, next) => {
     try {
         const id = req.params.listId
-        const list = await List.findOne({ where: { id: id }})
+        const list = await db.list.findOne({ where: { id: id }})
         res.status(200).json(list)
     } catch (err) {
         next(err)
@@ -35,7 +36,7 @@ const getList = async (req, res, next) => {
 //GET ALL TO DO LISTS FOR A USER
 const getAllLists = async (req, res, next) => {
     try {
-        const lists = await List.findAll({})
+        const lists = await db.list.findAll({})
         res.status(200).json(lists)
     } catch (err) {
         next(err)
@@ -46,7 +47,7 @@ const getAllLists = async (req, res, next) => {
 const updateList = async (req, res, next) => {
     try {
         const id = req.params.listId
-        await List.update(req.body, { where: { id: id }})
+        await db.list.update(req.body, { where: { id: id }})
             .then(() => {
                 res.status(200).json("List Information has been Updated")
             }).catch(err => {
@@ -61,9 +62,11 @@ const updateList = async (req, res, next) => {
 const deleteList = async (req, res, next) => {
     try {
         const id = req.params.listId
-        await List.destroy({ where: { id: id }})
+        await db.list.destroy({ where: { id: id }})
             .then(() => {
                 res.status(200).json("List Information has been deleted")
+            }).catch(err => {
+                res.status(500).json(err)
             })
     } catch (err) {
         next(err)
