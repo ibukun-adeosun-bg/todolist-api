@@ -24,15 +24,15 @@ module.exports = (sequelize, Sequelize) => {
         }
     })
     
-    List.associate = function(user) {
-        List.belongsTo(user, {
+    List.associate = function(model) {
+        List.belongsTo(model.user, {
             foreignKey: "userId",
             onDelete: "cascade"
         })
     }
 
-    List.associate = function(task) {
-        List.hasMany(task, {
+    List.associate = function(model) {
+        List.hasMany(model.task, {
             foreignKey: "ListId",
             onDelete: "cascade"
         })

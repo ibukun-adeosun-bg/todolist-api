@@ -19,8 +19,8 @@ module.exports = (sequelize, Sequelize) => {
         }
     });
     
-    User.associate = function(list) {
-        User.hasMany(list, {
+    User.associate = function(model) {
+        User.hasMany(model.list, {
             foreignKey: "userId",
             onDelete: "cascade"
         })

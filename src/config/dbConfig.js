@@ -39,11 +39,11 @@ const User = require("../models/User.js")(sequelize, Sequelize)
 const List = require("../models/ToDoList.js")(sequelize, Sequelize)
 const Task = require("../models/Task.js")(sequelize, Sequelize)
 
-List.belongsTo(User)
-Task.belongsTo(List)
+db.user = User;
+db.list = List;
+db.task = Task;
 
-db.user = User
-db.list = List
-db.task = Task
+User.associate(db);
+List.associate(db);
 
 module.exports = db
