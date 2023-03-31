@@ -31,7 +31,7 @@ const getTask = async (req, res, next) => {
         if (parseInt(listId) === task.ListId) {
             res.status(200).json(task)
         } else {
-            res.status(401).json("This task isn't part of your list")
+            res.status(401).json("This task isn't part of this list")
         }
     } catch (err) {
         next(err)
