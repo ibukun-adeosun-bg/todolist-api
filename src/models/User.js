@@ -18,5 +18,12 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.BOOLEAN
         }
     });
+    
+    User.associate = function(list) {
+        User.hasMany(list, {
+            foreignKey: "userId",
+            onDelete: "cascade"
+        })
+    }
     return User
 }

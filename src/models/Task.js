@@ -26,7 +26,7 @@ module.exports = (sequelize, Sequelize) => {
     })
     Task.associate = function(list) {
         Task.belongsTo(list, {
-            foreignKey: "listId",
+            foreignKey: "ListId",
             onDelete: "cascade"
         })
     }

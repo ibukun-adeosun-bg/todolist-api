@@ -31,5 +31,12 @@ module.exports = (sequelize, Sequelize) => {
         })
     }
 
+    List.associate = function(task) {
+        List.hasMany(task, {
+            foreignKey: "ListId",
+            onDelete: "cascade"
+        })
+    }
+
     return List
 };
