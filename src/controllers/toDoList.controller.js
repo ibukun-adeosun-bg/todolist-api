@@ -25,10 +25,11 @@ const createList = async (req, res, next) => {
 //GET A TO DO LIST OF A USER
 const getList = async (req, res, next) => {
     try {
+        const userId = req.params.userId
         const listId = req.params.listId
         const list = await db.list.findOne(
-            { where: { id: listId }},
-            { includes: {model: db.task}}
+            { where: { id: listId, userId: userId }},
+            { include: { model: db.task } }
         )
         res.status(200).json(list)
     } catch (err) {
@@ -40,7 +41,7 @@ const getList = async (req, res, next) => {
 const getAllLists = async (req, res, next) => {
     try {
         const lists = await db.list.findAll({
-            includes: {model: db.task}
+            include: { model: db.task }
         })
         res.status(200).json(lists)
     } catch (err) {
