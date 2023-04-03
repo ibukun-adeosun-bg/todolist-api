@@ -1,4 +1,5 @@
 const db = require("../config/dbConfig")
+const Sequelize = require("sequelize")
 
 //CREATE A TO DO LIST
 const createList = async (req, res, next) => {
@@ -25,12 +26,11 @@ const createList = async (req, res, next) => {
 //GET A TO DO LIST OF A USER
 const getList = async (req, res, next) => {
     try {
-        const userId = req.params.userId
         const listId = req.params.listId
-        const list = await db.list.findOne(
-            { where: { id: listId, userId: userId }},
-            { include: { model: db.task } }
-        )
+        const list = await db.list.findOne({
+            where: { id: listId },
+            include: [{ model: db.task }]
+        })
         res.status(200).json(list)
     } catch (err) {
         next(err)
@@ -79,5 +79,44 @@ const deleteList = async (req, res, next) => {
     }
 }
 
+//SEARCHING FOR A TASK ACROSS ALL TO DO LISTS
+const searchTask = async (req, res, next) => {
+    try {
+        const term = req.query.term;
+        console.log(req.query);
+        console.log(term);
+        const tasks = await db.task.findAll({
+            where: {
+                [Sequelize.Op.or]: [
+                    {
+                        task_description: {
+                            [Sequelize.Op.iLike]: `%${term}%`
+                        }
+                    },
+                    {
+                        due_date: {
+                            [Sequelize.Op.iLike]: `%${term}%`
+                        }
+                    },
+                    {
+                        priority: {
+                            [Sequelize.Op.iLike]: `%${term}%`
+                        }
+                    },
+                    {
+                        status: {
+                            [Sequelize.Op.iLike]: `%${term}%`
+                        }
+                    }
+                ]
+            },
+            include: [{ model: db.list }]
+        });
+        res.status(200).json(tasks);
+    } catch (err) {
+        next(err)
+    }
+}
 
-module.exports = { createList, getList, getAllLists, updateList, deleteList }
+
+module.exports = { createList, getList, getAllLists, updateList, deleteList, searchTask }

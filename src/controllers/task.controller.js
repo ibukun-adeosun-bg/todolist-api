@@ -42,7 +42,11 @@ const getTask = async (req, res, next) => {
 const getAllTasks = async (req, res, next) => {
     try {
         const listId = req.params.listId
-        const tasks = await db.task.findAll({})
+        const tasks = await db.task.findAll({
+            order: [
+                ['due_date', 'ASC']
+            ]
+        })
         let matchingTasks = []
         for (let task of tasks) {
             if (parseInt(listId) === task.ListId) {
@@ -84,6 +88,7 @@ const deleteTask = async (req, res, next) => {
         next(err)
     }
 }
+
 
 
 module.exports = { createTask, getTask, getAllTasks, updateTask, deleteTask }
