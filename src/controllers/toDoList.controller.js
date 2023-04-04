@@ -1,5 +1,4 @@
 const db = require("../config/dbConfig")
-const Sequelize = require("sequelize")
 
 //CREATE A TO DO LIST
 const createList = async (req, res, next) => {
@@ -40,10 +39,42 @@ const getList = async (req, res, next) => {
 //GET ALL TO DO LISTS FOR A USER
 const getAllLists = async (req, res, next) => {
     try {
-        const lists = await db.list.findAll({
-            include: { model: db.task }
-        })
-        res.status(200).json(lists)
+        const qTask = req.query.task
+        console.log(qTask);
+        if (qTask) {
+            const tasks = await db.task.findAll({
+                where: {
+                    [db.Sequelize.Op.or]: [
+                        {
+                            task_description: {
+                                [db.Sequelize.Op.like]: `%${qTask}%`
+                            }
+                        },
+                        {
+                            due_date: {
+                                [db.Sequelize.Op.like]: `%${qTask}%`
+                            }
+                        },
+                        {
+                            priority: {
+                                [db.Sequelize.Op.like]: `%${qTask}%`
+                            }
+                        },
+                        {
+                            status: {
+                                [db.Sequelize.Op.like]: `%${qTask}%`
+                            }
+                        }
+                    ]
+                }
+            });
+            res.status(200).json(tasks)
+        } else {
+            const lists = await db.list.findAll({
+                include: { model: db.task }
+            })
+            res.status(200).json(lists)
+        }  
     } catch (err) {
         next(err)
     }
@@ -79,44 +110,5 @@ const deleteList = async (req, res, next) => {
     }
 }
 
-//SEARCHING FOR A TASK ACROSS ALL TO DO LISTS
-const searchTask = async (req, res, next) => {
-    try {
-        const term = req.query.term;
-        console.log(req.query);
-        console.log(term);
-        const tasks = await db.task.findAll({
-            where: {
-                [Sequelize.Op.or]: [
-                    {
-                        task_description: {
-                            [Sequelize.Op.iLike]: `%${term}%`
-                        }
-                    },
-                    {
-                        due_date: {
-                            [Sequelize.Op.iLike]: `%${term}%`
-                        }
-                    },
-                    {
-                        priority: {
-                            [Sequelize.Op.iLike]: `%${term}%`
-                        }
-                    },
-                    {
-                        status: {
-                            [Sequelize.Op.iLike]: `%${term}%`
-                        }
-                    }
-                ]
-            },
-            include: [{ model: db.list }]
-        });
-        res.status(200).json(tasks);
-    } catch (err) {
-        next(err)
-    }
-}
 
-
-module.exports = { createList, getList, getAllLists, updateList, deleteList, searchTask }
+module.exports = { createList, getList, getAllLists, updateList, deleteList }

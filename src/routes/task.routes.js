@@ -6,10 +6,10 @@ const router = express.Router()
 //CREATE A TASK
 router.post("/:userId/todolists/:listId/tasks", verifyUser, createTask)
 
-//GET A TASK
+//GET A TASK OF A PARTICULAR LIST
 router.get("/:userId/todolists/:listId/tasks/:taskId", verifyUser, getTask)
 
-//GET ALL TASKS
+//GET ALL TASKS OF A PARTICULAR LIST
 router.get("/:userId/todolists/:listId/tasks", verifyUser, getAllTasks)
 
 //UPDATE A TASK

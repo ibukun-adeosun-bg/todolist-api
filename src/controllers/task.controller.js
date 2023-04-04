@@ -38,7 +38,7 @@ const getTask = async (req, res, next) => {
     }
 }
 
-//GET ALL TASKS
+//GET ALL TASKS OF A PARTICULAR LIST
 const getAllTasks = async (req, res, next) => {
     try {
         const listId = req.params.listId
