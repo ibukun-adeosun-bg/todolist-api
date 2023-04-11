@@ -1,4 +1,5 @@
 const jwt  = require("jsonwebtoken")
+const bcrypt = require("bcryptjs")
 const db = require("../config/dbConfig")
 
 //GET USER INFORMATION
@@ -25,6 +26,14 @@ const getAllUsers = async (req, res, next) => {
 //UPDATE USER INFORMATION
 const updateUser = async (req, res, next) => {
     try {
+        if (req.body.password) {
+            const salt = bcrypt.genSaltSync(10)
+            req.body.password = bcrypt.hashSync(req.body.password, salt)
+        }
+        if (req.body.isAdmin) {
+            res.status(401).json("You cannot change your Admin Status")
+        }
+
         const id = req.params.userId
         const userUpdate = await db.user.update(req.body, { where: { id: id }})
         res.status(200).json("User Information has been Updated")
