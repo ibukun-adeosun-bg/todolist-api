@@ -3,11 +3,15 @@ const db = require("../config/dbConfig")
 //CREATE A TASK
 const createTask = async (req, res, next) => {
     try {
+        if (req.file) {
+            req.body.file = req.file.filename
+        }
         const info = {
             task_description: req.body.task_description,
             due_date: req.body.due_date,
             priority: req.body.priority ? req.body.priority : "not urgent",
             status: req.body.status ? req.body.status : "pending",
+            file: req.body.file,
             ListId: req.body.ListId
         }
         const newTask = new db.task(info)

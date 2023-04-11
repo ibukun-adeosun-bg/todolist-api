@@ -22,6 +22,9 @@ module.exports = (sequelize, Sequelize) => {
             validate: {
                 isIn: [['completed', 'pending']]
             }
+        },
+        file: {
+            type: Sequelize.STRING
         }
     })
     Task.associate = function(models) {
